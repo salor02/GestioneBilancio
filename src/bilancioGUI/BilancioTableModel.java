@@ -14,21 +14,6 @@ public class BilancioTableModel extends DefaultTableModel{
         super(COLUMN_NAMES, 0);
     }
 
-    /**
-     * Aggiorna la tabella
-     */
-    public void tableUpdate(Bilancio bilancio){
-        this.setRowCount(0); //elimina tutte le voci presenti nella tabella
-
-        //ripopola la tabella
-        for(int i = 0; i < bilancio.getLenght(); i++){
-            this.addRow(bilancio.getVoce(i).toObjectArray());
-        }
-
-
-        System.out.println("[SUCCESS] Tabella aggiornata");
-    }
-
     @Override
     public boolean isCellEditable(int row, int column) { // custom isCellEditable function
         return false;

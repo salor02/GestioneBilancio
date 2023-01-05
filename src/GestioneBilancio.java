@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 
 import bilancioGUI.*;
 import bilancioUtil.*;
@@ -12,14 +11,13 @@ public class GestioneBilancio {
         Bilancio bilancio = new Bilancio();
         System.out.println("[SUCCESS] Bilancio creato!");
 
-        //DEFINIZIONE PANNELLO PRINCIPALE CONTENITORE
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(new OperationPanel(), BorderLayout.LINE_START);
-        mainPanel.add(new CenterPanel(bilancio), BorderLayout.CENTER);
-
         //DEFINIZIONE FRAME
         DefaultFrame frame = new DefaultFrame("Gesione Bilancio");
+
+        //DEFINIZIONE PANNELLO PRINCIPALE CONTENITORE
+        MainPanel mainPanel = new MainPanel(bilancio, frame.getMenu());
+
+        
         frame.setVisible(true);
 
         frame.add(mainPanel);

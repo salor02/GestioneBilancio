@@ -3,18 +3,19 @@ package bilancioUtil;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
+import java.io.Serializable;
 import java.time.DateTimeException;
 
 
 /**
  * Ogni oggetto di questa classe rappresenta semplicemente una voce del bilancio
  */
-public class VoceBilancio{
+public class VoceBilancio implements Serializable{
     private LocalDate date;
     private String desc;
     private double amount;
 
-    private DateTimeFormatter dtf;
+    private static final long serialVersionUID = 1L;
 
     /**
      * @param date Data in formato stringa "dd/mm/yyyy"
@@ -40,8 +41,7 @@ public class VoceBilancio{
 
         //verifica che la data inserita sia valida
         try{
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
-            this.date = LocalDate.parse(date, dtf);
+            this.date = LocalDate.parse(date, Bilancio.dtf);
         }
         catch(DateTimeException e){
             System.out.println(e.getMessage());
@@ -49,7 +49,6 @@ public class VoceBilancio{
         }
 
         this.desc = desc;
-        this.dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu");
     }
 
     /**
@@ -63,7 +62,6 @@ public class VoceBilancio{
         this.date = date;
         this.desc = desc;
         this.amount = amount;
-        this.dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu");
     }
 
     /**
@@ -95,7 +93,15 @@ public class VoceBilancio{
      * @return oggetto voce sottoforma di oggetto (utile per inserire voce in tabella)
      */
     public Object[] toObjectArray(){
-        return new Object[]{this.date.format(dtf), this.desc, this.amount};
+        return new Object[]{this.date.format(Bilancio.dtf), this.desc, this.amount};
+    }
+
+    public String toString(){
+        return this.date.format(Bilancio.dtf) + '\t' + this.desc + '\t' + this.amount;
+    }
+
+    public String[] toStringArray(){
+        return new String[]{this.date.format(Bilancio.dtf), this.desc, Double.toString(this.amount)};
     }
 
     @Override

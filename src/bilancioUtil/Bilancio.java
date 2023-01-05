@@ -3,6 +3,11 @@ package bilancioUtil;
 import java.util.LinkedList;
 
 import javax.naming.NameNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+import java.io.Serializable;
+import java.time.DateTimeException;
 
 
 /**
@@ -10,8 +15,11 @@ import javax.naming.NameNotFoundException;
  * le quali sono memorizzate in una LinkedList dato che ha costo computazionale costante
  * per gli inserimenti in testa e le cancellazioni, operazioni molto frequenti in un bilancio.
  */
-public class Bilancio {
+public class Bilancio implements Serializable{
     private LinkedList<VoceBilancio> listaMovimenti;
+    protected final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Inizializza lista che andrà a contenere i movimenti
@@ -55,6 +63,11 @@ public class Bilancio {
         return listaMovimenti.get(index);
     }
 
+    
+    public LinkedList<VoceBilancio> getListaMovimenti() {
+        return listaMovimenti;
+    }
+
     /**
      * Aggiunge una voce alla lista dei movimenti
      * @param date data in formato stringa
@@ -65,6 +78,14 @@ public class Bilancio {
     public void addVoce(String date, String desc, String amount) throws IllegalArgumentException{
         //il controllo sui dati inseriti viene effettuato a livello di vocebilancio
         listaMovimenti.add(new VoceBilancio(date, desc, amount));
+    }
+
+    /**
+     * Aggiunge una voce alla lista dei movimenti
+     * @param voce oggetto di classe VoceBilancio (controlli già sono stati effettuati quindi no eccezioni)
+     */
+    public void addVoce(VoceBilancio voce){
+        listaMovimenti.add(voce);
     }
 
     /**
@@ -123,5 +144,36 @@ public class Bilancio {
         }
 
         return sum;
+    }
+
+    public void setListaMovimenti(LinkedList<VoceBilancio> listaMovimenti){
+        this.listaMovimenti = listaMovimenti;
+    }
+
+    public Bilancio dateFilter(String from, String to) throws IllegalArgumentException{
+
+        LocalDate fromDate, toDate;
+        Bilancio bilancioFiltrato = new Bilancio();
+        //verifica che le date inserite siano valide
+        try{
+            fromDate = LocalDate.parse(from, Bilancio.dtf);
+            toDate = LocalDate.parse(to, Bilancio.dtf);
+        }
+        catch(DateTimeException e){
+            throw new IllegalArgumentException("Data inserita non valida");
+        }
+
+        //verifica che la data finale sia maggiore di quella finale
+        if(toDate.compareTo(fromDate) < 0)
+            throw new IllegalArgumentException("Data iniziale maggiore della data finale");
+
+        //cerca le voci nel range di date fornito
+        for(VoceBilancio voce: this.listaMovimenti){
+            if(voce.getDate().compareTo(fromDate) >= 0 && voce.getDate().compareTo(toDate) <= 0){
+                bilancioFiltrato.addVoce(voce);
+            }
+        }
+
+        return bilancioFiltrato;
     }
 }
