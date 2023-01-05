@@ -1,5 +1,0 @@
---- GESTIONE DEL BILANCIO
-
-ho scelto arraylist perchè è veloce e ha un costo costante in fase di stampa, 
-siccome molti movimenti devono essere visualizzati e aggiornati ad ogni operazione sicuramente ci saranno più
-stampe che inserimenti ed eliminazioni (per cui una linkedlist avrebbe un costo computazionale minore). 
