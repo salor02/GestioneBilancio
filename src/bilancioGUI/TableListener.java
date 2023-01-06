@@ -1,27 +1,40 @@
 package bilancioGUI;
 
-import bilancioUtil.*;
-import fileManager.*;
-
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.print.PrinterException;
-import java.io.*;
-import javax.naming.NameNotFoundException;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.event.*;
-import bilancioUtil.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.DateTimeException;
 
+import javax.naming.NameNotFoundException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.JOptionPane;
+
+import bilancioUtil.Bilancio;
+
+/**
+ * Gestisce tutte le azioni inviate da componenti presenti nel pannello TablePanel
+ */
 public class TableListener implements ActionListener, ListSelectionListener{
+    /**
+     * pannello tabella
+     */
     private TablePanel tablePanel;
+
+    /**
+     * pannello principale
+     */
     private MainPanel mainPanel;
+
+    /**
+     * bilancio su cui operare
+     */
     private Bilancio bilancio;
 
+    /**
+     * Inizializza tutti gli attributi della classe e tutti i listener
+     * @param mainPanel il pannello principale tramite il quale è possibile accedere a tutti gli elementi
+     */
     public TableListener(MainPanel mainPanel){
         this.mainPanel = mainPanel;
         this.bilancio = mainPanel.bilancio;
@@ -34,7 +47,11 @@ public class TableListener implements ActionListener, ListSelectionListener{
         this.tablePanel.submitVoce.addActionListener(this);
     }
 
+    /**
+     * Listener dedicato ad eventi di tipo ActionEvent
+     */
     public void actionPerformed(ActionEvent e){
+
         //se pulsante premuto è submitVoce 
         if(e.getSource() == tablePanel.submitVoce){
 
@@ -47,19 +64,16 @@ public class TableListener implements ActionListener, ListSelectionListener{
                 //se modalità "aggiungi"
                 if(tablePanel.addVoce.isSelected()){
                     bilancio.addVoce(date, desc, amount);
-                    mainPanel.tableUpdate(bilancio);
                     System.out.println("[SUCCESS] Nuova voce inserita nel bilancio");
                 }
                 //se modalità "elimina"
                 if(tablePanel.deleteVoce.isSelected()){
                     bilancio.deleteVoce(date, desc, amount);
-                    mainPanel.tableUpdate(bilancio);
                     System.out.println("[SUCCESS] Voce eliminata dal bilancio correttamente");
                 }
                 //se modalità "modifica"
                 if(tablePanel.updateVoce.isSelected()){
                     bilancio.updateVoce(tablePanel.selDate, tablePanel.selDesc, tablePanel.selAmount, date, desc, amount);
-                    mainPanel.tableUpdate(bilancio);
                     System.out.println("[SUCCESS] Voce modificata correttamente");
                 }
                 
@@ -70,15 +84,18 @@ public class TableListener implements ActionListener, ListSelectionListener{
                 tablePanel.inputAmount.setText("");
                 tablePanel.addVoce.setSelected(true);
 
-                //aggiornamento resoconto bilancio
+                //aggiornamento resoconto bilancio e aggiornamento tabella
+                mainPanel.tableUpdate(bilancio);
                 mainPanel.resocontoUpdate(bilancio);
             }
             catch(IllegalArgumentException ex){
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 System.out.println("[ERROR] " + ex.getMessage());
             }
             /*NB: eccezione non necessaria siccome verrebbe sollevata in caso una riga selezionata non si trovi
             effettivamente nella tabella, una situazione che non dovrebbe mai succedere */
             catch(NameNotFoundException ex){
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 System.out.println("[ERROR] " + ex.getMessage());
             }
         }
@@ -123,7 +140,6 @@ public class TableListener implements ActionListener, ListSelectionListener{
 
         //controlla che la selezione sia finita
         if(!e.getValueIsAdjusting()){
-            //System.out.println(table.getSelectedRow() + e.toString());
             
             int row = tablePanel.table.getSelectedRow();
 

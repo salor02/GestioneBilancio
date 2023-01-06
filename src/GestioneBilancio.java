@@ -1,12 +1,15 @@
-import javax.swing.*;
+import autoSave.AutoSave;
+import bilancioGUI.DefaultFrame;
+import bilancioGUI.MainPanel;
+import bilancioUtil.Bilancio;
 
-import bilancioGUI.*;
-import bilancioUtil.*;
-import autoSave.*;
-
+/**
+ * Classe principale del programma, avvio tutto il necessario
+ */
 public class GestioneBilancio {
     public static void main(String[] args) throws Exception {
-        System.out.println("GesioneBilancio is running...");
+        System.out.println("\tGesioneBilancio is running...");
+        System.out.println("\t----------------------------\t\n");
 
         //INIZIALIZZAZIONE BILANCIO
         Bilancio bilancio = new Bilancio();
@@ -23,9 +26,7 @@ public class GestioneBilancio {
         autoSave.start(); 
         
         frame.setVisible(true);
-
         frame.add(mainPanel);
-        
         frame.pack();
     }
 }

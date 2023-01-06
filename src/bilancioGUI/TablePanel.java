@@ -1,28 +1,65 @@
 package bilancioGUI;
 
-import javax.naming.NameNotFoundException;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.event.*;
-import bilancioUtil.*;
+import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+
 /**
- * Questa classe si occupa di inizializzare il pannello centrale, contenente il pannello della
- * tabella del bilancio e il pannello del resoconto del bilancio
+ * Questa classe si occupa di inizializzare il pannello della tabella, contenente il pannello della
+ * tabella del bilancio e il pannello del resoconto del bilancio e il pannello per aggiungere/eliminare/modificare una voce
  */
 public class TablePanel extends JPanel{
+    /**
+     * btn submit del pannello per aggiungere/eliminare/modificare una voce
+     */
     protected JButton submitVoce;
+
+    /**
+     * permette di selezionare una delle modalità
+     */
     protected JRadioButton addVoce, deleteVoce, updateVoce;
+
+    /**
+     * campo di testo dove inserire i dati della nuova voce
+     */
     protected JTextField inputDate, inputDesc, inputAmount;
+
+    /**
+     * label contenuta nel pannello del resoconto
+     */
     protected JLabel resultLabel, totalValue;
 
+    /**
+     * tabella del bilancio
+     */
     protected JTable table;
+
+    /**
+     * valori attualmente selezionati nella tabella
+     */
     protected String selDate, selDesc, selAmount;
+
+    /**
+     * modello della tabella implementata
+     */
     protected BilancioTableModel dataModel;
 
+    /**
+     * Costruisce il pannello
+     */
     public TablePanel(){
         super();
 
@@ -32,10 +69,10 @@ public class TablePanel extends JPanel{
         dataModel = new BilancioTableModel();
         table = new JTable(dataModel);
 
+        //imposta il renderer personalizzato per ogni colonna
         for(int i = 0; i < table.getColumnModel().getColumnCount(); i++){
-            table.getColumnModel().getColumn(i).setCellRenderer(new MyRenderer());
+            table.getColumnModel().getColumn(i).setCellRenderer(new SearchRenderer());
         }
-
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //permette di selezionare solo una voce
         
@@ -89,7 +126,7 @@ public class TablePanel extends JPanel{
         opsPanel.add(new JLabel("")); //per creare una cella vuota
 
         //3 riga -> inserimento campi di testo e button submit
-        inputDate = new JTextField(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/uuuu"))); //valore di defalt
+        inputDate = new JTextField(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/uuuu"))); //valore di default
         inputDesc = new JTextField();
         inputAmount = new JTextField();
 
@@ -113,7 +150,7 @@ public class TablePanel extends JPanel{
     /**
      * Attiva e disattiva i 3 campi di testo che sono presenti all'interno del pannello che permette
      * di aggiungere, modificare o eliminare voci
-     * @param flag True si vuole attivare i campi di testo, false altrimenti
+     * @param flag true si vuole attivare i campi di testo, false altrimenti
      */
     protected void switchInputText(boolean flag){
         inputDate.setEditable(flag);

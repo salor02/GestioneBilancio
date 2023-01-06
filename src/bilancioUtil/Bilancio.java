@@ -16,11 +16,21 @@ import java.time.DateTimeException;
  * per gli inserimenti in testa e le cancellazioni, operazioni molto frequenti in un bilancio.
  */
 public class Bilancio implements Serializable{
-    private LinkedList<VoceBilancio> listaMovimenti;
+    /**
+     * Formatter unico per le date, anche gli oggetti di classe VoceBilancio possono accedere a questa variabile
+     */
     protected final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
-
+    
+    /**
+     * Necessario per gestire la versione dell'oggetto serializzato (procedimento che avviene quando si salva su file binario)
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Lista di tutti i movimenti
+     */
+    private LinkedList<VoceBilancio> listaMovimenti;
+    
     /**
      * Inizializza lista che andrà a contenere i movimenti
      */
@@ -52,7 +62,7 @@ public class Bilancio implements Serializable{
     }
 
     /**
-     * 
+     * Restituisce la voce del bilancio avente indice passato come parametro, se non esiste ritorna un oggetto null
      * @param index indice della voce da restituire
      * @return voce della lista di indice passato come parametro
      */
@@ -63,11 +73,22 @@ public class Bilancio implements Serializable{
         return listaMovimenti.get(index);
     }
 
-    
+    /**
+     * Ritorna lista dei movimenti
+     * @return lista dei movimenti
+     */
     public LinkedList<VoceBilancio> getListaMovimenti() {
         return listaMovimenti;
     }
 
+    /**
+     * Imposta una nuova lista movimenti
+     * @param listaMovimenti nuova lista movimenti
+     */
+    public void setListaMovimenti(LinkedList<VoceBilancio> listaMovimenti){
+        this.listaMovimenti = listaMovimenti;
+    }
+    
     /**
      * Aggiunge una voce alla lista dei movimenti
      * @param date data in formato stringa
@@ -94,7 +115,7 @@ public class Bilancio implements Serializable{
      * @param desc descrizione movimento
      * @param amount ammontare movimento
      * @throws IllegalArgumentException per segnalare la presenza di parametri errati
-     * @throws NameNotFoundException generata se non viene trovata nessuna corrispondenza 
+     * @throws NameNotFoundException generata se non viene trovata nessuna corrispondenza
      */
     public void deleteVoce(String date, String desc, String amount) throws IllegalArgumentException, NameNotFoundException{
         VoceBilancio toDelete = new VoceBilancio(date, desc, amount);
@@ -133,7 +154,7 @@ public class Bilancio implements Serializable{
     }
   
     /**
-     * 
+     * Calcola il valore totale del bilancio
      * @return Valore totale del bilancio
      */
     public double totalValue(){
@@ -146,12 +167,14 @@ public class Bilancio implements Serializable{
         return sum;
     }
 
-    public void setListaMovimenti(LinkedList<VoceBilancio> listaMovimenti){
-        this.listaMovimenti = listaMovimenti;
-    }
-
+    /**
+     * Filtra il bilancio per data producendo un nuovo sottobilancio
+     * @param from data iniziale in formato Stringa
+     * @param to data finale in formato Stringa
+     * @return sottobilancio filtrato
+     * @throws IllegalArgumentException sollevata in caso vengano insertite delle date sbagliate (o vuote)
+     */
     public Bilancio dateFilter(String from, String to) throws IllegalArgumentException{
-
         LocalDate fromDate, toDate;
         Bilancio bilancioFiltrato = new Bilancio();
         //verifica che le date inserite siano valide

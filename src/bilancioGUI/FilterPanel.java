@@ -4,15 +4,32 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Questa classe si occupa di inizializzare il pannello delle operazioni, contenente il pannello dei
- * bottoni e il pannello del filtro per data
+ * Si occupa di inizializzare il pannello delle operazioni, contenente il pannello del filtro per data e quello per la ricerca 
  */
 public class FilterPanel extends JPanel{
+    /**
+     * campo di testo utile ai filtri
+     */
     protected JTextField dateA, dateB, searchText;
+
+    /**
+     * bottone di invio
+     */
     protected JButton submitPeriod, submitSearch, filterOFF;
+
+    /**
+     * permette di selezionare una modalità di filtro
+     */
     protected JRadioButton dayFilter, monthFilter, yearFilter, customFilter;
+
+    /**
+     * label per data
+     */
     protected JLabel startDateLabel, endDateLabel;
 
+    /**
+     * Inizializza il panello
+     */
     public FilterPanel(){
         super();
 
@@ -21,6 +38,7 @@ public class FilterPanel extends JPanel{
 
         periodPanel.setLayout(new GridLayout(3,4));
 
+        //1 riga -> scelta modalità filtro
         dayFilter = new JRadioButton("Giorno");
         monthFilter = new JRadioButton("Mese");
         yearFilter = new JRadioButton("Anno");
@@ -35,16 +53,20 @@ public class FilterPanel extends JPanel{
 
         dayFilter.setSelected(true);
 
+        //2 riga -> dedicata solo alle label che compaiono in caso di filtro personalizzato, altrimenti riga vuota
         startDateLabel = new JLabel("Inizio", SwingConstants.CENTER);
         startDateLabel.setVisible(false);
         periodPanel.add(startDateLabel);
+
         endDateLabel = new JLabel("Fine", SwingConstants.CENTER);
         endDateLabel.setVisible(false);
         periodPanel.add(endDateLabel);
+
         periodPanel.add(new JLabel("")); //per creare spazio vuoto
         periodPanel.add(new JLabel("")); //per creare spazio vuoto
 
-        dateA = new JTextField("dd/mm/yyyy");
+        //3 riga -> dedicata ai campi di inserimento e ai bottono invia o annulla
+        dateA = new JTextField("dd/mm/yyyy"); //date A funge sia da "placeholder" sia da vero e proprio campo nel caso di filtro personalizzato
         dateA.setEditable(false);
         dateB = new JTextField(10);
         submitPeriod = new JButton("Filtra");
@@ -76,8 +98,5 @@ public class FilterPanel extends JPanel{
 
         this.add(periodPanel);
         this.add(searchPanel);
-        this.add(new JPanel());
-
-
     }
 }

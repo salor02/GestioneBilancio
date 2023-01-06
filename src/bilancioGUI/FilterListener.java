@@ -1,35 +1,55 @@
 package bilancioGUI;
 
-import javax.naming.NameNotFoundException;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.event.*;
-import bilancioUtil.*;
+import javax.swing.JOptionPane;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.DateTimeException;
 import java.util.LinkedList;
+
+import bilancioUtil.Bilancio;
 
 
 /**
- * Questa classe si occupa di gestire tutti gli eventi provenienti dal pannello principale (e quindi dai sottopanelli), 
- * in questo modo è possibile avere una corretta interazione tra vari componenti presenti in pannelli diversi.
+ * Questa classe si occupa di gestire tutti gli eventi provenienti dal pannello filtro
  */
 public class FilterListener implements ActionListener{
+
+    /**
+     * pannello filtro
+     */
     private FilterPanel filterPanel;
+
+    /**
+     * pannello tabella
+     */
     private TablePanel tablePanel;
-    private Bilancio bilancio;
+
+    /**
+     * pannello principale
+     */
     private MainPanel mainPanel;
 
+    /**
+     * bilancio su cui operare
+     */
+    private Bilancio bilancio;
+
+    /**
+     * variabile contenente l'ultima parola cercata
+     */
     private String searchedWord;
+
+    /**
+     * lista contenente tutti i risultati della ricerca
+     */
     private LinkedList<Point> listaRisultatiRicerca;
 
     /**
-     * Inizializza il listener mantenendo un riferimento ai pannelli passati come parametro
-     * @param tablePanel pannello contenente la tabella e tutte le operazioni su di essa eseguibili
-     * @param filterPanel pannello che permette di filtrare i dati mostrati in tabella
-     * @param bilancio oggetto bilancio che contiene tutti i dati su cui si sta lavorando
+     * Inizializza tutti gli attributi della classe e tutti i listener
+     * @param mainPanel il pannello principale tramite il quale è possibile accedere a tutti gli elementi
      */
     public FilterListener(MainPanel mainPanel){
         this.mainPanel = mainPanel;
@@ -49,8 +69,6 @@ public class FilterListener implements ActionListener{
         this.filterPanel.filterOFF.addActionListener(this);
     }
 
-   
-    
     /**
      * Gestisce le azioni dei pulsanti del pannello
      * @param e evento catturato
@@ -58,6 +76,7 @@ public class FilterListener implements ActionListener{
     public void actionPerformed(ActionEvent e){
         //PANNELLO FILTRA PER PERIODO
 
+        //se non è stato premuto il button per modalità custom o se non è selezionato vengono nascoste le label dedicate
         if(e.getSource() != filterPanel.customFilter && !filterPanel.customFilter.isSelected()){
             filterPanel.dateA.setEditable(false);
             filterPanel.startDateLabel.setVisible(false);
@@ -132,6 +151,7 @@ public class FilterListener implements ActionListener{
                 toDate = filterPanel.dateB.getText();
             }
 
+            //applica effettivamente il filtro
             try{
                 Bilancio bilancioFiltrato;
                 bilancioFiltrato = bilancio.dateFilter(fromDate, toDate);
@@ -140,6 +160,7 @@ public class FilterListener implements ActionListener{
                 System.out.println("[SUCCESS] Bilancio filtrato correttamente");    
             }
             catch(IllegalArgumentException ex){
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 System.out.println("[ERROR] " + ex.getMessage());
             }
         }
@@ -147,40 +168,43 @@ public class FilterListener implements ActionListener{
         //se premuto button annulla filtro
         if(e.getSource() == filterPanel.filterOFF){
             mainPanel.tableUpdate(bilancio);
+            mainPanel.resocontoUpdate(bilancio);
             System.out.println("[SUCCESS] Filtro annullato"); 
         }
 
         //PANNELLO RICERCA
         if(e.getSource() == filterPanel.submitSearch){
 
+            //se la parola cercata è diversa dall'ultima cercata bisogna effettuare una nuova ricerca
             if(!searchedWord.equals(filterPanel.searchText.getText())){
+
                 searchedWord = filterPanel.searchText.getText();
                 System.out.println("[SUCCESS] Ricerca avviata per '" + searchedWord + "'");
 
+                //ricerca parola nella TABELLA (non nella lista) questo perchè sarà utile capire la posizione nella tabella per evidenziare le celle
                 for(int i = 0; i < tablePanel.table.getRowCount(); i++){
                     for(int j = 0; j < tablePanel.table.getColumnCount(); j++){
                         if(tablePanel.table.getValueAt(i, j).toString().contains(searchedWord)){
                             System.out.println("[SUCCESS] Trovata corrispondenza nella cella (" + i + "," + j + ")");
-                            this.listaRisultatiRicerca.add(new Point(i,j));
+                            this.listaRisultatiRicerca.add(new Point(i,j)); //inserisce nella lista sottoforma di point perchè è utile per memorizzare coppia di valori
                         }
                     }
                 }
             }
-            else{
-                System.out.println("[SUCCESS] Ricerca prosegue per '" + searchedWord + "'");    
-            }
 
+            //se la lista dei risultati ha ancora qualcosa dentro li evidenzia
             if(listaRisultatiRicerca.size() > 0){
                 Point next = listaRisultatiRicerca.remove();
                 tablePanel.dataModel.setHighlight((int)next.getX(), (int)next.getY());
-            }
+                System.out.println("[SUCCESS] Evidenziata occorrenza di '" + searchedWord + "' (" + (int)next.getX() + "," + (int)next.getY() + ")");  
+            }//se la lista non ha più risultati elimina ogni evidenziatura
             else{
                 tablePanel.dataModel.setHighlight(-1, -1);
+                System.out.println("[ALERT] Nessun risultato trovato o occorrenze terminate");
             }
 
-            mainPanel.tableUpdate(bilancio);
-            
-
+            //necessario per applicare le evidenziature 
+            tablePanel.table.repaint();    
         }
     }
 

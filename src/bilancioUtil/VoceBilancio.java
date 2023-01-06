@@ -1,29 +1,41 @@
 package bilancioUtil;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ResolverStyle;
 import java.io.Serializable;
 import java.time.DateTimeException;
-
+import java.time.LocalDate;
 
 /**
- * Ogni oggetto di questa classe rappresenta semplicemente una voce del bilancio
+ * Ogni oggetto di questa classe rappresenta una voce singola del bilancio
  */
 public class VoceBilancio implements Serializable{
+    /**
+     * Data in cui è stato effettuato il movimento
+     */
     private LocalDate date;
+
+    /**
+     * Descrizione del movimento
+     */
     private String desc;
+
+    /**
+     * Ammontare del movimento
+     */
     private double amount;
 
+    /**
+     * Necessario per gestire la versione dell'oggetto serializzato (procedimento che avviene quando si salva su file binario)
+     */
     private static final long serialVersionUID = 1L;
 
     /**
+     * Questo costruttore prende in ingresso una data formattata come stringa e 
+     * successivamente la converte in un oggetto Date
+     * 
      * @param date Data in formato stringa "dd/mm/yyyy"
      * @param desc Descrizione movimento
      * @param amount Ammontare movimento
-     * 
-     * Questo costruttore prende in ingresso una data formattata come stringa e 
-     * successivamente la converte in un oggetto Date
+     * @exception IllegalArgumentException viene sollevata in caso i dati inseriti dovessero contenere qualche errore
      */
     public VoceBilancio(String date, String desc, String amount) throws IllegalArgumentException{
 
@@ -52,20 +64,7 @@ public class VoceBilancio implements Serializable{
     }
 
     /**
-     * Questo costruttore prende in ingresso un oggetto Date per cui non ha bisogno di 
-     * svolgere nessun'altra operazione
-     * @param date Data sottoforma di oggetto Date
-     * @param desc Descrizione movimento
-     * @param amount Ammontare movimento
-     */
-    public VoceBilancio(LocalDate date, String desc, double amount){
-        this.date = date;
-        this.desc = desc;
-        this.amount = amount;
-    }
-
-    /**
-     * 
+     * Restituisce il campo date
      * @return campo "data"
      */
     public LocalDate getDate() {
@@ -73,7 +72,7 @@ public class VoceBilancio implements Serializable{
     }
 
     /**
-     * 
+     * Restituisce il campo descrizione
      * @return campo "descrizione"
      */
     public String getDesc() {
@@ -81,7 +80,7 @@ public class VoceBilancio implements Serializable{
     }
 
     /**
-     * 
+     * Restituisce il campo ammontare
      * @return campo "ammontare"
      */
     public double getAmount() {
@@ -89,22 +88,35 @@ public class VoceBilancio implements Serializable{
     }
 
     /**
-     * 
+     * Converte l'oggetto VoceBilancio in un oggetto generico
      * @return oggetto voce sottoforma di oggetto (utile per inserire voce in tabella)
      */
     public Object[] toObjectArray(){
-        return new Object[]{this.date.format(Bilancio.dtf), this.desc, this.amount};
+        return new Object[]{this.date.format(Bilancio.dtf), this.desc, String.format("%.2f",this.amount)};
     }
 
+    /**
+     * Converte l'oggetto VoceBilancio in una Stringa
+     * @return oggetto sottoforma di stringa
+     */
     public String toString(){
         return this.date.format(Bilancio.dtf) + '\t' + this.desc + '\t' + this.amount;
     }
 
+    /**
+     * Converte l'oggetto VoceBilancio in un array di oggetti Stringa
+     * @return array di oggetti Stringa
+     */
     public String[] toStringArray(){
         return new String[]{this.date.format(Bilancio.dtf), this.desc, Double.toString(this.amount)};
     }
 
     @Override
+    /**
+     * Override della funzione generica equals, permette di verificare se due voci sono uguali confrontando tutti i campi
+     * @param obj oggetto da confrontare
+     * @return true se le voci sono uguali, false altrimenti
+     */
     public boolean equals(Object obj){
         //se oggetto nullo o non è instanza di vocebilancio
         if(obj == null || !(obj instanceof VoceBilancio)) return false;
@@ -117,5 +129,4 @@ public class VoceBilancio implements Serializable{
             return true;
         return false;
     }
-
 }

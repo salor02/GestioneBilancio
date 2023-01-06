@@ -1,28 +1,43 @@
 package fileManager;
 
-import java.io.*;
-import bilancioUtil.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import com.opencsv.CSVWriter;
 
+import bilancioUtil.Bilancio;
+import bilancioUtil.VoceBilancio;
+
+/**
+ * Gestisce il salvataggio del bilancio su File CSV
+ */
 public class CSVManager extends FileManager{
+
+    /**
+     * Imposta il file su cui operare
+     * @param file file su cui operare
+     */
     public CSVManager(File file){
         super(file);
     }
 
+    @Override
     public void save(Bilancio bilancio) throws IOException{
-        // create CSVWriter object filewriter object as parameter
+
+        //csv write è praticamente una classe filtro
         CSVWriter writer = new CSVWriter(new FileWriter(this.file));
   
-        // adding header to csv
+        //imposta gli header
         String[] header = { "Data", "Descrizione", "Ammontare" };
         writer.writeNext(header);
   
-        // add data to csv
+        //scrive effettivamente il bilancio 
         for(VoceBilancio voce: bilancio.getListaMovimenti()){
             writer.writeNext(voce.toStringArray());
         }
   
-        // closing writer connection
+        //chiude la connessione
         writer.close();
     }
 }
