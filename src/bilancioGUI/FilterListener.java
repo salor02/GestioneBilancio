@@ -9,6 +9,7 @@ import bilancioUtil.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.DateTimeException;
+import java.util.LinkedList;
 
 
 /**
@@ -17,8 +18,12 @@ import java.time.DateTimeException;
  */
 public class FilterListener implements ActionListener{
     private FilterPanel filterPanel;
+    private TablePanel tablePanel;
     private Bilancio bilancio;
     private MainPanel mainPanel;
+
+    private String searchedWord;
+    private LinkedList<Point> listaRisultatiRicerca;
 
     /**
      * Inizializza il listener mantenendo un riferimento ai pannelli passati come parametro
@@ -29,7 +34,11 @@ public class FilterListener implements ActionListener{
     public FilterListener(MainPanel mainPanel){
         this.mainPanel = mainPanel;
         this.filterPanel = mainPanel.filterPanel;
+        this.tablePanel = mainPanel.tablePanel;
         this.bilancio = mainPanel.bilancio;
+
+        this.searchedWord = "";
+        this.listaRisultatiRicerca = new LinkedList<Point>();
 
         this.filterPanel.dayFilter.addActionListener(this);
         this.filterPanel.monthFilter.addActionListener(this);
@@ -143,9 +152,34 @@ public class FilterListener implements ActionListener{
 
         //PANNELLO RICERCA
         if(e.getSource() == filterPanel.submitSearch){
-            String toSearch = filterPanel.searchText.getText();
 
-            System.out.println("[SUCCESS] Ricerca avviata per '" + toSearch + "'");
+            if(!searchedWord.equals(filterPanel.searchText.getText())){
+                searchedWord = filterPanel.searchText.getText();
+                System.out.println("[SUCCESS] Ricerca avviata per '" + searchedWord + "'");
+
+                for(int i = 0; i < tablePanel.table.getRowCount(); i++){
+                    for(int j = 0; j < tablePanel.table.getColumnCount(); j++){
+                        if(tablePanel.table.getValueAt(i, j).toString().contains(searchedWord)){
+                            System.out.println("[SUCCESS] Trovata corrispondenza nella cella (" + i + "," + j + ")");
+                            this.listaRisultatiRicerca.add(new Point(i,j));
+                        }
+                    }
+                }
+            }
+            else{
+                System.out.println("[SUCCESS] Ricerca prosegue per '" + searchedWord + "'");    
+            }
+
+            if(listaRisultatiRicerca.size() > 0){
+                Point next = listaRisultatiRicerca.remove();
+                tablePanel.dataModel.setHighlight((int)next.getX(), (int)next.getY());
+            }
+            else{
+                tablePanel.dataModel.setHighlight(-1, -1);
+            }
+
+            mainPanel.tableUpdate(bilancio);
+            
 
         }
     }

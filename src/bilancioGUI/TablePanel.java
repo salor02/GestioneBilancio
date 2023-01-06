@@ -32,6 +32,11 @@ public class TablePanel extends JPanel{
         dataModel = new BilancioTableModel();
         table = new JTable(dataModel);
 
+        for(int i = 0; i < table.getColumnModel().getColumnCount(); i++){
+            table.getColumnModel().getColumn(i).setCellRenderer(new MyRenderer());
+        }
+
+
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //permette di selezionare solo una voce
         
         JScrollPane scrollPane = new JScrollPane(table);

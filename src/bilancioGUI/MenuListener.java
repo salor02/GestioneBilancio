@@ -50,7 +50,7 @@ public class MenuListener implements ActionListener{
                 try {
                     File selectedFile = chooser.getSelectedFile();
                     System.out.println("[SUCCESS] File selezionato: " + selectedFile);
-
+                    
                     //polimorfismo in tutto il suo splendore
                     if(command.equals("Salva")) fileManager = new BinaryManager(selectedFile);
                     if(command.equals("Esporta CSV")) fileManager = new CSVManager(selectedFile);
