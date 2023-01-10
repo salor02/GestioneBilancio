@@ -10,7 +10,10 @@ import bilancioUtil.Bilancio;
 
 /**
  * Pannello principale del programma, racchiude tutti gli altri pannelli e ha anche un riferimento alla barra dei menu in alto. 
- * Si occupa principalmente di posizionare i sottopannelli al suo interno e di inizializzare i vari listener
+ * Si occupa principalmente di posizionare i sottopannelli al suo interno e di inizializzare i vari listener. 
+ * In questa classe è possibile osservare una parte di struttura dell'intero programma, difatti il mainpanel racchiunde tutti gli elementi
+ * del frame e tutti i listener hanno accesso al mainpanel. Quest'ultimo contiene i riferimenti ai singoli pannelli ed è in questo modo che ogni
+ * listener può quindi accedere ad ogni elemento anche se si trova in un pannello diverso.
  */
 public class MainPanel extends JPanel{
     /**

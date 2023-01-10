@@ -4,7 +4,7 @@ import bilancioGUI.MainPanel;
 import bilancioUtil.Bilancio;
 
 /**
- * Classe principale del programma, avvio tutto il necessario
+ * Classe principale del programma, avvia tutto il necessario
  */
 public class GestioneBilancio {
     public static void main(String[] args) throws Exception {

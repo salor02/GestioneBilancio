@@ -16,6 +16,9 @@ import fileManager.FileManager;
 import fileManager.ODSManager;
 import fileManager.TXTManager;
 
+/**
+ * Questa classe si occupa di gestire tutti gli eventi generati dal menu in alto
+ */
 public class MenuListener implements ActionListener{
     /**
      * riferimento a menu file in alto
