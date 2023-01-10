@@ -61,6 +61,7 @@ public class FilterListener implements ActionListener{
         this.listaRisultatiRicerca = new LinkedList<Point>();
 
         this.filterPanel.dayFilter.addActionListener(this);
+        this.filterPanel.weekFilter.addActionListener(this);
         this.filterPanel.monthFilter.addActionListener(this);
         this.filterPanel.yearFilter.addActionListener(this);
         this.filterPanel.customFilter.addActionListener(this);
@@ -79,13 +80,19 @@ public class FilterListener implements ActionListener{
         //se non è stato premuto il button per modalità custom o se non è selezionato vengono nascoste le label dedicate
         if(e.getSource() != filterPanel.customFilter && !filterPanel.customFilter.isSelected()){
             filterPanel.dateA.setEditable(false);
-            filterPanel.startDateLabel.setVisible(false);
-            filterPanel.endDateLabel.setVisible(false);
+            filterPanel.startDateLabel.setText("Formato data");
+            filterPanel.endDateLabel.setText("Inserire data");
         }
 
         //se premuto radio button giorno
         if(e.getSource() == filterPanel.dayFilter){
             System.out.println("[OPTION] Selezionato filtro per singolo giorno");
+            filterPanel.dateA.setText("dd/mm/yyyy");
+        }
+
+        //se premuto radio button settimana
+        if(e.getSource() == filterPanel.weekFilter){
+            System.out.println("[OPTION] Selezionato filtro per singola settimana");
             filterPanel.dateA.setText("dd/mm/yyyy");
         }
 
@@ -106,14 +113,15 @@ public class FilterListener implements ActionListener{
             System.out.println("[OPTION] Selezionato filtro per intervallo di date personalizzato");
             filterPanel.dateA.setText("");
             filterPanel.dateA.setEditable(true);
-            filterPanel.startDateLabel.setVisible(true);
-            filterPanel.endDateLabel.setVisible(true);
+            filterPanel.startDateLabel.setText("Data iniziale");
+            filterPanel.endDateLabel.setText("Data finale");
         }
 
         //se premuto button submitPeriod
         if(e.getSource() == filterPanel.submitPeriod){
             String fromDate, toDate;
             fromDate = toDate = "";
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu");
 
             //controlla in quale modalità si è
 
@@ -123,12 +131,25 @@ public class FilterListener implements ActionListener{
                 toDate = fromDate;
             }
 
+            //se modalità filtro per settimana singola antecedente
+            if(filterPanel.weekFilter.isSelected()){
+                toDate = filterPanel.dateB.getText();
+
+                //calcola il mese e deduce quanti giorni ha (tiene conto anche di anno bisestile)
+                try{
+                    LocalDate temp = LocalDate.parse(toDate, dtf);
+                    fromDate = temp.minusDays(7).format(dtf);
+                }
+                catch(DateTimeException ex){
+                    //vuoto perchè l'errore viene comunque riconosciuto dopo da dateFilter()
+                }
+            }
+
             //se modalità filtro per mese singolo
             if(filterPanel.monthFilter.isSelected()){
                 fromDate = "01/" + filterPanel.dateB.getText();
 
                 //calcola il mese e deduce quanti giorni ha (tiene conto anche di anno bisestile)
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu");
                 try{
                     LocalDate temp = LocalDate.parse(fromDate, dtf);
                     toDate = temp.getMonth().length(temp.isLeapYear()) + "/" + filterPanel.dateB.getText();

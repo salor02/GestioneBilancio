@@ -22,7 +22,7 @@ public class DefaultFrame extends JFrame{
     /**
      * Larghezza predefinita
      */
-    private static final int DEFAULT_WIDTH = 100;
+    private static final int DEFAULT_WIDTH = 500;
 
     /**
      * Altezza predefinita

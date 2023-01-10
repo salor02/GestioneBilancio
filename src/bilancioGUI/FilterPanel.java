@@ -20,7 +20,7 @@ public class FilterPanel extends JPanel{
     /**
      * permette di selezionare una modalità di filtro
      */
-    protected JRadioButton dayFilter, monthFilter, yearFilter, customFilter;
+    protected JRadioButton dayFilter, monthFilter, yearFilter, customFilter, weekFilter;
 
     /**
      * label per data
@@ -36,45 +36,44 @@ public class FilterPanel extends JPanel{
         //DEFINIZIONE PANNELLO FILTRA PER PERIODO
         JPanel periodPanel = new JPanel();
 
-        periodPanel.setLayout(new GridLayout(3,4));
+        periodPanel.setLayout(new GridLayout(4,3));
 
-        //1 riga -> scelta modalità filtro
+        //1 riga e 2 riga -> scelta modalità filtro
         dayFilter = new JRadioButton("Giorno");
+        weekFilter = new JRadioButton("Settimana antecedente");
         monthFilter = new JRadioButton("Mese");
         yearFilter = new JRadioButton("Anno");
         customFilter = new JRadioButton("Personalizzato");
         ButtonGroup grp = new ButtonGroup();
-        grp.add(dayFilter); grp.add(monthFilter); grp.add(yearFilter); grp.add(customFilter);
+        grp.add(dayFilter); grp.add(weekFilter); grp.add(monthFilter); grp.add(yearFilter); grp.add(customFilter);
 
         periodPanel.add(dayFilter);
+        periodPanel.add(weekFilter);
         periodPanel.add(monthFilter);
         periodPanel.add(yearFilter);
         periodPanel.add(customFilter);
+        periodPanel.add(new JLabel("")); //per creare spazio vuoto
 
         dayFilter.setSelected(true);
 
-        //2 riga -> dedicata solo alle label che compaiono in caso di filtro personalizzato, altrimenti riga vuota
-        startDateLabel = new JLabel("Inizio", SwingConstants.CENTER);
-        startDateLabel.setVisible(false);
+        //3 e 4 riga -> label filtro personalizzato - campi data - bottoni invio
+        startDateLabel = new JLabel("Formato data", SwingConstants.CENTER);
         periodPanel.add(startDateLabel);
 
-        endDateLabel = new JLabel("Fine", SwingConstants.CENTER);
-        endDateLabel.setVisible(false);
-        periodPanel.add(endDateLabel);
-
-        periodPanel.add(new JLabel("")); //per creare spazio vuoto
-        periodPanel.add(new JLabel("")); //per creare spazio vuoto
-
-        //3 riga -> dedicata ai campi di inserimento e ai bottono invia o annulla
         dateA = new JTextField("dd/mm/yyyy"); //date A funge sia da "placeholder" sia da vero e proprio campo nel caso di filtro personalizzato
         dateA.setEditable(false);
-        dateB = new JTextField(10);
-        submitPeriod = new JButton("Filtra");
-        filterOFF = new JButton("Annulla");
-
         periodPanel.add(dateA);
-        periodPanel.add(dateB);
+
+        submitPeriod = new JButton("Filtra");
         periodPanel.add(submitPeriod);
+
+        endDateLabel = new JLabel("Inserire data", SwingConstants.CENTER);
+        periodPanel.add(endDateLabel);
+
+        dateB = new JTextField(10);
+        periodPanel.add(dateB);
+
+        filterOFF = new JButton("Annulla");
         periodPanel.add(filterOFF);
 
         periodPanel.setBorder(BorderFactory.createTitledBorder("Filtra per periodo"));
