@@ -45,7 +45,7 @@ public class VoceBilancio implements Serializable{
 
         //verifica che la stringa inserita nel campo ammontare sia effettivamente un numero
         try{
-            this.amount = Double.parseDouble(amount);
+            this.amount = Double.parseDouble(amount.replace(",", "."));
         }
         catch(NumberFormatException e){
             throw new IllegalArgumentException("Ammontare inserito non valido");
@@ -88,14 +88,6 @@ public class VoceBilancio implements Serializable{
     }
 
     /**
-     * Converte l'oggetto VoceBilancio in un oggetto generico
-     * @return oggetto voce sottoforma di oggetto (utile per inserire voce in tabella)
-     */
-    public Object[] toObjectArray(){
-        return new Object[]{this.date.format(Bilancio.dtf), this.desc, String.format("%.2f",this.amount)};
-    }
-
-    /**
      * Converte l'oggetto VoceBilancio in una Stringa
      * @return oggetto sottoforma di stringa
      */
@@ -108,7 +100,7 @@ public class VoceBilancio implements Serializable{
      * @return array di oggetti Stringa
      */
     public String[] toStringArray(){
-        return new String[]{this.date.format(Bilancio.dtf), this.desc, Double.toString(this.amount)};
+        return new String[]{this.date.format(Bilancio.dtf), this.desc, String.format("%.2f",this.amount)};
     }
 
     @Override
@@ -124,8 +116,12 @@ public class VoceBilancio implements Serializable{
         //casting esplicito
         VoceBilancio voce = (VoceBilancio) obj;
 
+        //conversione a stringa per confrontare solo le prime 2 cifre decimali
+        String amount1 = String.format("%.2f",this.amount);
+        String amount2 = String.format("%.2f",voce.getAmount());
+
         //verifica uguaglianza attributi
-        if(this.desc.equals(voce.getDesc()) && this.amount == voce.getAmount() && this.date.equals(voce.getDate()))
+        if(this.desc.equals(voce.getDesc()) && amount1.equals(amount2)  && this.date.equals(voce.getDate()))
             return true;
         return false;
     }

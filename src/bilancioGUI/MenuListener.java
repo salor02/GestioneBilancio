@@ -63,7 +63,7 @@ public class MenuListener implements ActionListener{
         FileManager fileManager = null;
 
         //definisce un filechooser con posizione nella cartella predefinita "sav"
-        JFileChooser chooser = new JFileChooser(new File(System.getProperty("user.dir"), "sav"));
+        JFileChooser chooser = new JFileChooser(new File(System.getProperty("user.home")));
 
         //tutti i comandi che riguardano il salvataggio/esportazione
         if(command.equals("Salva") || command.equals("Esporta CSV") || command.equals("Esporta TXT") || command.equals("Esporta ODS")){

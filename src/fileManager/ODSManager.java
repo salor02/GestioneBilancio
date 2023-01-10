@@ -28,7 +28,7 @@ public class ODSManager extends FileManager{
 
         //popola la tabella
         for(int i = 0; i < bilancio.getLenght(); i++){
-            model.addRow(bilancio.getVoce(i).toObjectArray());  
+            model.addRow(bilancio.getVoce(i).toStringArray());  
         }
 
         //aggiunge la tabella al foglio di lavoro

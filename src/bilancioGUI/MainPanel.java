@@ -93,7 +93,7 @@ public class MainPanel extends JPanel{
 
         //ripopola la tabella
         for(int i = 0; i < bilancio.getLenght(); i++){
-            dataModel.addRow(bilancio.getVoce(i).toObjectArray());  
+            dataModel.addRow(bilancio.getVoce(i).toStringArray());  
         }
 
         System.out.println("[SUCCESS] Tabella aggiornata");

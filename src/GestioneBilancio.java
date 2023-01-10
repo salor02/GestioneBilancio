@@ -28,5 +28,6 @@ public class GestioneBilancio {
         frame.setVisible(true);
         frame.add(mainPanel);
         frame.pack();
+        frame.setResizable(false);
     }
 }
